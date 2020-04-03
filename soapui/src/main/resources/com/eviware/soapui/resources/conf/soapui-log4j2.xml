@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG" packages="com.eviware.soapui.support.log">
+
+    <!-- =================== -->
+    <!-- Appenders           -->
+    <!-- =================== -->
+
+	<Appenders>
+		<Console name="CONSOLE" target="SYSTEM_OUT">
+			<ThresholdFilter level="INFO"/>
+			<!-- The default pattern: Date Priority [Category] Message\n -->
+			<PatternLayout pattern="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/>
+		</Console>
+
+		<RollingFile name="FILE"
+				fileName="${soapui.logroot}soapui.log"
+				filePattern="${soapui.logroot}soapui.log.g"
+				ignoreExceptions="false">
+			<PatternLayout pattern="%d %-5p [%c{1}] %m%n"/>
+			<ThresholdFilter level="INFO"/>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5000KB" />
+			</Policies>
+			<DefaultRolloverStrategy max="50"/>	
+		</RollingFile>
+
+		<RollingFile name="ERRORFILE"
+				fileName="${soapui.logroot}soapui-errors.log"
+				filePattern="${soapui.logroot}soapui-errors.log.gz"
+				ignoreExceptions="false">
+			<PatternLayout pattern="%d %-5p [%c{1}] %m%n"/>
+			<ThresholdFilter level="INFO"/>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5000KB" />
+			</Policies>
+			<DefaultRolloverStrategy max="50"/>	
+		</RollingFile>
+
+		<RollingFile name="GLOBAL_GROOVY_LOG"
+				fileName="${soapui.logroot}global-groovy.log"
+				filePattern="${soapui.logroot}global-groovy.log.gz"
+				ignoreExceptions="false">
+			<PatternLayout pattern="%d %-5p [%c{1}] %m%n"/>
+			<ThresholdFilter level="DEBUG"/>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5000KB" />
+			</Policies>
+			<DefaultRolloverStrategy max="50"/>	
+		</RollingFile>
+	
+		<SoapUIAppender name="SOAPUI">
+			<PatternLayout pattern="%d %-5p [%c{1}] %m%n"/>
+		</SoapUIAppender>
+	</Appenders>
+	
+    <!-- =============== -->
+    <!-- Loggers         -->
+    <!-- =============== -->
+
+	<Loggers>
+		<logger name="groovy.log" level="INFO">
+			<appender-ref ref="GLOBAL_GROOVY_LOG"/>
+		</logger>
+
+		<logger name="com.eviware.soapui" level="DEBUG">
+			<appender-ref ref="SOAPUI"/>
+			<appender-ref ref="CONSOLE"/>
+		</logger>
+
+		<logger name="soapui.errorlog" level="DEBUG">
+			<appender-ref ref="ERRORFILE"/>
+		</logger>
+
+		<logger name="org.apache.commons.httpclient" level="ERROR">
+			<appender-ref ref="CONSOLE"/>
+		</logger>
+
+		<logger name="com.eviware.soapui.impl.wsdl.support.http.SoapUIMultiThreadedHttpConnectionManager" 
+			level="ERROR">
+			<appender-ref ref="ERRORFILE"/>
+		</logger>
+
+		<logger name="com.eviware.soapui.impl.wsdl.WsdlSubmit" level="ERROR">
+			<appender-ref ref="ERRORFILE"/>
+		</logger>
+
+		<root level="INFO">
+			<appender-ref ref="FILE"/>
+		</root>
+	</Loggers>
+
+</Configuration>

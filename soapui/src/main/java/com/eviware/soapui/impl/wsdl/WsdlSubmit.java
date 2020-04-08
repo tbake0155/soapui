@@ -24,7 +24,7 @@ import com.eviware.soapui.model.iface.Response;
 import com.eviware.soapui.model.iface.Submit;
 import com.eviware.soapui.model.iface.SubmitContext;
 import com.eviware.soapui.model.iface.SubmitListener;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -36,7 +36,7 @@ import java.util.concurrent.Future;
  */
 
 public final class WsdlSubmit<T extends AbstractHttpRequestInterface<?>> implements Runnable, Submit {
-    private final static Logger logger = Logger.getLogger(WsdlSubmit.class);
+    private final static Logger logger = org.apache.logging.log4j.LogManager.getLogger(WsdlSubmit.class);
     private T request;
     private SubmitListener[] listeners;
     private Status status;

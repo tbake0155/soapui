@@ -27,7 +27,7 @@ import com.eviware.soapui.support.components.JUndoableTextArea;
 import com.eviware.soapui.support.components.JXToolBar;
 import com.eviware.soapui.support.xml.XmlUtils;
 import com.jgoodies.forms.builder.ButtonBarBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -50,7 +50,7 @@ import java.awt.event.WindowEvent;
  *
  */
 public class AssertionConfigurationDialog {
-    private final static Logger log = Logger.getLogger(AssertionConfigurationDialog.class);
+    private final static Logger log = org.apache.logging.log4j.LogManager.getLogger(AssertionConfigurationDialog.class);
 
     protected JDialog configurationDialog;
     private JCheckBox allowWildcardsCheckBox;

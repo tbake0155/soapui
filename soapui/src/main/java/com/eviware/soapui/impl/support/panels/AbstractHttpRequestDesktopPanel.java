@@ -49,7 +49,7 @@ import com.eviware.soapui.support.editor.views.xml.source.XmlSourceEditorView.JE
 import com.eviware.soapui.support.editor.xml.XmlDocument;
 import com.eviware.soapui.support.swing.SoapUISplitPaneUI;
 import com.eviware.soapui.ui.support.ModelItemDesktopPanel;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import javax.swing.AbstractAction;
@@ -83,6 +83,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URISyntaxException;
 
 /**
  * Abstract DesktopPanel for HttpRequests
@@ -92,7 +93,7 @@ import java.beans.PropertyChangeListener;
 
 public abstract class AbstractHttpRequestDesktopPanel<T extends ModelItem, T2 extends AbstractHttpRequestInterface<?>>
         extends ModelItemDesktopPanel<T> implements SubmitListener {
-    private final static Logger log = Logger.getLogger(AbstractHttpRequestDesktopPanel.class);
+    private final static Logger log = org.apache.logging.log4j.LogManager.getLogger(AbstractHttpRequestDesktopPanel.class);
     public static final String END_POINT_COMBO_BOX = "EndPointComboBox";
 
     protected EndpointsComboBoxModel endpointsModel;
@@ -120,7 +121,7 @@ public abstract class AbstractHttpRequestDesktopPanel<T extends ModelItem, T2 ex
     private SubmitAction submitAction;
     private boolean hasClosed;
 
-    public AbstractHttpRequestDesktopPanel(T modelItem, T2 request) {
+    public AbstractHttpRequestDesktopPanel(T modelItem, T2 request) throws URISyntaxException {
         super(modelItem);
 
         this.request = request;
@@ -161,7 +162,7 @@ public abstract class AbstractHttpRequestDesktopPanel<T extends ModelItem, T2 ex
         return tabsButton;
     }
 
-    protected void init(T2 request) {
+    protected void init(T2 request) throws URISyntaxException {
         initializeFields();
         setEndpointsModel(request);
 
@@ -219,7 +220,7 @@ public abstract class AbstractHttpRequestDesktopPanel<T extends ModelItem, T2 ex
         return statusBar;
     }
 
-    protected JComponent buildContent() {
+    protected JComponent buildContent() throws URISyntaxException {
         requestSplitPane = UISupport.createHorizontalSplit();
         requestSplitPane.setResizeWeight(0.5);
         requestSplitPane.setBorder(null);
@@ -280,9 +281,9 @@ public abstract class AbstractHttpRequestDesktopPanel<T extends ModelItem, T2 ex
         return submitAction;
     }
 
-    protected abstract ModelItemXmlEditor<?, ?> buildResponseEditor();
+    protected abstract ModelItemXmlEditor<?, ?> buildResponseEditor() throws URISyntaxException;
 
-    protected abstract ModelItemXmlEditor<?, ?> buildRequestEditor();
+    protected abstract ModelItemXmlEditor<?, ?> buildRequestEditor() throws URISyntaxException;
 
     protected JComponent buildToolbar() {
         JPanel endpointPanel = buildEndpointPanel();
@@ -347,9 +348,17 @@ public abstract class AbstractHttpRequestDesktopPanel<T extends ModelItem, T2 ex
 
         }
 
-        requestEditor.setEditable(enabled);
+        try {
+            requestEditor.setEditable(enabled);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         if (responseEditor != null) {
-            responseEditor.setEditable(enabled);
+            try {
+                responseEditor.setEditable(enabled);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
 
         submitButton.setEnabled(enabled && request.hasEndpoint());
@@ -406,7 +415,7 @@ public abstract class AbstractHttpRequestDesktopPanel<T extends ModelItem, T2 ex
         private InputAreaFocusListener inputAreaFocusListener;
         private RSyntaxTextArea inputArea;
 
-        public AbstractHttpRequestMessageEditor(T3 document) {
+        public AbstractHttpRequestMessageEditor(T3 document) throws URISyntaxException {
             super(document, request);
 
             XmlSourceEditorView<?> editor = getSourceEditor();
@@ -447,7 +456,7 @@ public abstract class AbstractHttpRequestDesktopPanel<T extends ModelItem, T2 ex
         private RSyntaxTextArea inputArea;
         private ResultAreaFocusListener resultAreaFocusListener;
 
-        public AbstractHttpResponseMessageEditor(T3 document) {
+        public AbstractHttpResponseMessageEditor(T3 document) throws URISyntaxException {
             super(document, request);
 
             XmlSourceEditorView<?> editor = getSourceEditor();
@@ -494,7 +503,11 @@ public abstract class AbstractHttpRequestDesktopPanel<T extends ModelItem, T2 ex
         public void focusGained(FocusEvent e) {
             responseHasFocus = false;
 
-            statusBar.setTarget(new JEditorStatusBarTargetProxy(sourceEditor.getInputArea()));
+            try {
+                statusBar.setTarget(new JEditorStatusBarTargetProxy(sourceEditor.getInputArea()));
+            } catch (URISyntaxException ex) {
+                ex.printStackTrace();
+            }
             if (!splitButton.isEnabled()) {
                 requestTabs.setSelectedIndex(0);
                 return;
@@ -535,7 +548,11 @@ public abstract class AbstractHttpRequestDesktopPanel<T extends ModelItem, T2 ex
         public void focusGained(FocusEvent e) {
             responseHasFocus = true;
 
-            statusBar.setTarget(new JEditorStatusBarTargetProxy(sourceEditor.getInputArea()));
+            try {
+                statusBar.setTarget(new JEditorStatusBarTargetProxy(sourceEditor.getInputArea()));
+            } catch (URISyntaxException ex) {
+                ex.printStackTrace();
+            }
             if (!splitButton.isEnabled()) {
                 requestTabs.setSelectedIndex(1);
                 return;

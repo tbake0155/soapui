@@ -36,17 +36,16 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.io.File;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URISyntaxException;
+import java.util.*;
 
 public abstract class AbstractSoapUIRunner implements CmdLineRunner {
     public static final int NORMAL_TERMINATION = 0;
@@ -54,7 +53,7 @@ public abstract class AbstractSoapUIRunner implements CmdLineRunner {
 
     private boolean groovyLogInitialized;
     private String projectFile;
-    protected final Logger log = Logger.getLogger(getClass());
+    protected final Logger log = (Logger) LogManager.getLogger(getClass());
     private String settingsFile;
     private String soapUISettingsPassword;
     private String projectPassword;
@@ -74,7 +73,7 @@ public abstract class AbstractSoapUIRunner implements CmdLineRunner {
 
     protected void initGroovyLog() {
         if (!groovyLogInitialized) {
-            ensureConsoleAppenderIsDefined(Logger.getLogger("groovy.log"));
+            ensureConsoleAppenderIsDefined((Logger) LogManager.getLogger("groovy.log"));
             groovyLogInitialized = true;
         }
     }
@@ -87,14 +86,16 @@ public abstract class AbstractSoapUIRunner implements CmdLineRunner {
     protected void ensureConsoleAppenderIsDefined(Logger logger) {
         if (logger != null) {
             // ensure there is a ConsoleAppender defined, adding one if necessary
-            for (Object appender : Collections.list(logger.getAllAppenders())) {
-                if (appender instanceof ConsoleAppender) {
+            final Iterator<Appender> appenderIter = logger.getAppenders().values().iterator();
+            while(appenderIter.hasNext()) {
+                if (appenderIter.next() instanceof ConsoleAppender) {
                     return;
                 }
             }
-            ConsoleAppender consoleAppender = new ConsoleAppender();
-            consoleAppender.setWriter(new OutputStreamWriter(System.out));
-            consoleAppender.setLayout(new PatternLayout("%d{ABSOLUTE} %-5p [%c{1}] %m%n"));
+            ConsoleAppender consoleAppender = ConsoleAppender.newBuilder()
+                    .setLayout(PatternLayout.newBuilder().withPattern("%d{ABSOLUTE} %-5p [%c{1}] %m%n").build())
+                    .setTarget(ConsoleAppender.Target.SYSTEM_OUT)
+                    .build();
             logger.addAppender(consoleAppender);
         }
     }
@@ -205,7 +206,7 @@ public abstract class AbstractSoapUIRunner implements CmdLineRunner {
         }
     }
 
-    protected SoapUICore createSoapUICore() {
+    protected SoapUICore createSoapUICore() throws URISyntaxException {
         if (enableUI) {
             StandaloneSoapUICore core = new StandaloneSoapUICore(settingsFile);
             log.info("Enabling UI Components");

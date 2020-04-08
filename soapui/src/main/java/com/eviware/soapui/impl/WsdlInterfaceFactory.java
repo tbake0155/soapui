@@ -33,7 +33,7 @@ import com.eviware.soapui.model.propertyexpansion.PropertyExpander;
 import com.eviware.soapui.model.propertyexpansion.PropertyExpansionContext;
 import com.eviware.soapui.settings.WsdlSettings;
 import com.eviware.soapui.support.SoapUIException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
@@ -43,7 +43,7 @@ import java.net.URISyntaxException;
 
 public class WsdlInterfaceFactory implements InterfaceFactory<WsdlInterface> {
     public final static String WSDL_TYPE = "wsdl";
-    private final static Logger log = Logger.getLogger(WsdlInterfaceFactory.class);
+    private final static Logger log = org.apache.logging.log4j.LogManager.getLogger(WsdlInterfaceFactory.class);
 
     public WsdlInterface build(WsdlProject project, InterfaceConfig config) {
         return new WsdlInterface(project, (WsdlInterfaceConfig) config.changeType(WsdlInterfaceConfig.type));

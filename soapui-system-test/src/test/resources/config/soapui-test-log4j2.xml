@@ -15,13 +15,13 @@
   ~ under the Licence.
 -->
 
-<Configuration status="INFO">
+<Configuration status="INFO" monitorInterval="5">
 
 	<Appenders>
-		<ConsoleAppender name="CONSOLE" target="SYSTEM_OUT">
+		<Console name="CONSOLE" target="SYSTEM_OUT">
 			<ThresholdFilter level="ERROR"/>
 			<PatternLayout pattern="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/>
-		</ConsoleAppender>
+		</Console>
 	</Appenders>
 
     <logger name="groovy.log" level="ERROR">

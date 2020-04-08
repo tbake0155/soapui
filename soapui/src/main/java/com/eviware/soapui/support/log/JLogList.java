@@ -19,10 +19,13 @@ package com.eviware.soapui.support.log;
 import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.support.UISupport;
 import org.apache.commons.collections.list.TreeList;
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.config.Property;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractListModel;
@@ -46,6 +49,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -139,12 +143,12 @@ public class JLogList extends JPanel {
             return;
         }
 
-        if (line instanceof LoggingEvent) {
-            LoggingEvent ev = (LoggingEvent) line;
+        if (line instanceof LogEvent) {
+            LogEvent ev = (LogEvent) line;
             linesToAdd.add(new LoggingEventWrapper(ev));
 
-            if (ev.getThrowableInformation() != null) {
-                Throwable t = ev.getThrowableInformation().getThrowable();
+            if (ev.getThrown() != null) {
+                Throwable t = ev.getThrown();
                 StringWriter sw = new StringWriter();
                 PrintWriter pw = new PrintWriter(sw);
                 t.printStackTrace(pw);
@@ -199,10 +203,10 @@ public class JLogList extends JPanel {
     }
 
     private final static class LoggingEventWrapper {
-        private final LoggingEvent loggingEvent;
+        private final LogEvent loggingEvent;
         private String str;
 
-        public LoggingEventWrapper(LoggingEvent loggingEvent) {
+        public LoggingEventWrapper(LogEvent loggingEvent) {
             this.loggingEvent = loggingEvent;
         }
 
@@ -213,7 +217,7 @@ public class JLogList extends JPanel {
         public String toString() {
             if (str == null) {
                 StringBuilder builder = new StringBuilder();
-                builder.append(new Date(loggingEvent.timeStamp));
+                builder.append(new Date(loggingEvent.getNanoTime()));
                 builder.append(':').append(loggingEvent.getLevel()).append(':').append(loggingEvent.getMessage());
                 str = builder.toString();
             }
@@ -223,7 +227,7 @@ public class JLogList extends JPanel {
     }
 
     public void addLogger(String loggerName, boolean addAppender) {
-        Logger logger = Logger.getLogger(loggerName);
+        Logger logger = (Logger) org.apache.logging.log4j.LogManager.getLogger(loggerName);
         if (addAppender) {
             logger.addAppender(internalLogAppender);
         }
@@ -251,16 +255,17 @@ public class JLogList extends JPanel {
         return null;
     }
 
-    private class InternalLogAppender extends AppenderSkeleton {
-        protected void append(LoggingEvent event) {
-            addLine(event);
+    private class InternalLogAppender extends AbstractAppender {
+        protected InternalLogAppender() {
+            super("internalLogAppender", null, null, false, new Property[0]);
         }
 
         public void close() {
         }
 
-        public boolean requiresLayout() {
-            return false;
+        @Override
+        public void append(LogEvent logEvent) {
+            addLine(logEvent);
         }
     }
 

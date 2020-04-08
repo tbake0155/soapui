@@ -1,0 +1,19 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.jgoodies</groupId>
+  <artifactId>forms</artifactId>
+  <version>1.0.7</version>
+  <name>JGoodies Forms</name>
+  <url>https://forms.dev.java.net/</url>
+  <description>JGoodies Forms: An Advanced Swing Layout System</description>
+  <licenses>
+    <license>
+      <name>The BSD License</name>
+      <url>https://forms.dev.java.net/source/browse/*checkout*/forms/LICENSE.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://forms.dev.java.net/source/browse/forms/</url>
+  </scm>
+</project>

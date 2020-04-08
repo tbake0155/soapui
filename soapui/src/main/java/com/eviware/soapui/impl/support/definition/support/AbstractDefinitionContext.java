@@ -29,7 +29,7 @@ import com.eviware.soapui.support.UISupport;
 import com.eviware.x.dialogs.Worker;
 import com.eviware.x.dialogs.XProgressDialog;
 import com.eviware.x.dialogs.XProgressMonitor;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.apache.xmlbeans.SchemaTypeLoader;
 import org.apache.xmlbeans.SchemaTypeSystem;
 
@@ -51,7 +51,7 @@ public abstract class AbstractDefinitionContext<T extends AbstractInterface<?>, 
     private boolean loaded;
     private SchemaException schemaException;
 
-    private final static Logger log = Logger.getLogger(AbstractDefinitionContext.class);
+    private final static Logger log = org.apache.logging.log4j.LogManager.getLogger(AbstractDefinitionContext.class);
 
     private T2 currentLoader;
     private T iface;

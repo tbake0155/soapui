@@ -28,10 +28,11 @@ import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 import java.awt.Color;
 import java.awt.Insets;
+import java.net.URISyntaxException;
 
 public class StandaloneSoapUICore extends SwingSoapUICore {
 
-    public StandaloneSoapUICore(boolean init) {
+    public StandaloneSoapUICore(boolean init) throws URISyntaxException {
         super();
 
         if (init) {
@@ -39,12 +40,12 @@ public class StandaloneSoapUICore extends SwingSoapUICore {
         }
     }
 
-    public StandaloneSoapUICore(String settingsFile) {
+    public StandaloneSoapUICore(String settingsFile) throws URISyntaxException {
         super(null, settingsFile);
 
     }
 
-    public StandaloneSoapUICore(boolean init, String soapUISettingsPassword) {
+    public StandaloneSoapUICore(boolean init, String soapUISettingsPassword) throws URISyntaxException {
         super(true, soapUISettingsPassword);
 
         if (init) {

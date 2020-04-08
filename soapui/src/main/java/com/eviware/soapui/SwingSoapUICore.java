@@ -41,13 +41,14 @@ import com.eviware.x.impl.swing.SwingFormFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URISyntaxException;
 
 public class SwingSoapUICore extends DefaultSoapUICore {
     public SwingSoapUICore() {
         super();
     }
 
-    public SwingSoapUICore(String root, String settingsFile) {
+    public SwingSoapUICore(String root, String settingsFile) throws URISyntaxException {
         super(root, settingsFile);
     }
 

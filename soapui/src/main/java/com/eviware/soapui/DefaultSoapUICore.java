@@ -43,8 +43,9 @@ import com.eviware.soapui.support.listener.SoapUIListenerRegistry;
 import com.eviware.soapui.support.types.StringList;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.ssl.OpenSSL;
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -55,6 +56,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.GeneralSecurityException;
@@ -101,7 +103,7 @@ public class DefaultSoapUICore implements SoapUICore {
         this.initialImport = initialImport;
     }
 
-    public static DefaultSoapUICore createDefault() {
+    public static DefaultSoapUICore createDefault() throws URISyntaxException {
         return new DefaultSoapUICore(null, DEFAULT_SETTINGS_FILE);
     }
 
@@ -121,18 +123,18 @@ public class DefaultSoapUICore implements SoapUICore {
         this.root = root;
     }
 
-    public DefaultSoapUICore(String root, String settingsFile) {
+    public DefaultSoapUICore(String root, String settingsFile) throws URISyntaxException {
         this(root);
         init(settingsFile);
     }
 
-    public DefaultSoapUICore(String root, String settingsFile, String password) {
+    public DefaultSoapUICore(String root, String settingsFile, String password) throws URISyntaxException {
         this(root);
         this.password = password;
         init(settingsFile);
     }
 
-    public void init(String settingsFile) {
+    public void init(String settingsFile) throws URISyntaxException {
         initLog();
 
         SoapUI.setSoapUICore(this);
@@ -485,23 +487,29 @@ public class DefaultSoapUICore implements SoapUICore {
 
     protected void initLog() {
         if (!logIsInitialized) {
-            String logFileName = System.getProperty(SoapUISystemProperties.SOAPUI_LOG4j_CONFIG_FILE, "soapui-log4j.xml");
+            LoggerContext context = (org.apache.logging.log4j.core.LoggerContext)
+                    LogManager.getContext(false);
+            String logFileName = System.getProperty(SoapUISystemProperties.SOAPUI_LOG4j_CONFIG_FILE, "soapui-log4j2.xml");
             File log4jconfig = root == null ? new File(logFileName) : new File(new File(getRoot()), logFileName);
             if (log4jconfig.exists()) {
                 System.out.println("Configuring log4j from [" + log4jconfig.getAbsolutePath() + "]");
-                DOMConfigurator.configureAndWatch(log4jconfig.getAbsolutePath(), 5000);
+                context.setConfigLocation(new File(log4jconfig.getAbsolutePath()).toURI());
             } else {
-                URL url = SoapUI.class.getResource("/com/eviware/soapui/resources/conf/soapui-log4j.xml");
+                URL url = SoapUI.class.getResource("/com/eviware/soapui/resources/conf/soapui-log4j2.xml");
                 if (url != null) {
-                    DOMConfigurator.configure(url);
+                    try {
+                        context.setConfigLocation(url.toURI());
+                    } catch (URISyntaxException e) {
+                        System.err.println("Missing soapui-log4j.xml2 configuration");
+                    }
                 } else {
-                    System.err.println("Missing soapui-log4j.xml configuration");
+                    System.err.println("Missing soapui-log4j.xml2 configuration");
                 }
             }
 
             logIsInitialized = true;
 
-            log = Logger.getLogger(DefaultSoapUICore.class);
+            log = LogManager.getLogger(DefaultSoapUICore.class);
         }
     }
 

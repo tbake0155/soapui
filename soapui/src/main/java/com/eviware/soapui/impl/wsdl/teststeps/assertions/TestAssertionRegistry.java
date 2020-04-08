@@ -53,8 +53,9 @@ import com.eviware.soapui.security.assertion.SensitiveInfoExposureAssertion;
 import com.eviware.soapui.security.assertion.ValidHttpStatusCodesAssertion;
 import com.eviware.soapui.support.factory.SoapUIFactoryRegistryListener;
 import com.eviware.soapui.support.types.StringToStringMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -73,9 +74,9 @@ public class TestAssertionRegistry implements SoapUIFactoryRegistryListener {
     private static TestAssertionRegistry instance;
     private Map<String, TestAssertionFactory> availableAssertions = new HashMap<String, TestAssertionFactory>();
     private StringToStringMap assertionLabels = new StringToStringMap();
-    private final static Logger log = Logger.getLogger(TestAssertionRegistry.class);
+    private final static Logger log = org.apache.logging.log4j.LogManager.getLogger(TestAssertionRegistry.class);
 
-    private TestAssertionRegistry() {
+    private TestAssertionRegistry() throws URISyntaxException {
         addAssertion(new SoapResponseAssertion.Factory());
         addAssertion(new SoapRequestAssertion.Factory());
         addAssertion(new SchemaComplianceAssertion.Factory());
@@ -127,7 +128,7 @@ public class TestAssertionRegistry implements SoapUIFactoryRegistryListener {
         assertionLabels.remove( factory.getAssertionLabel());
     }
 
-    public static synchronized TestAssertionRegistry getInstance() {
+    public static synchronized TestAssertionRegistry getInstance() throws URISyntaxException {
         if (instance == null) {
             instance = new TestAssertionRegistry();
         }

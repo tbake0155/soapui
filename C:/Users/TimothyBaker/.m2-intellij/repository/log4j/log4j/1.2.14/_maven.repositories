@@ -1,0 +1,6 @@
+#NOTE: This is an internal implementation file, its format can be changed without prior notice.
+#Thu Apr 02 15:17:56 EDT 2020
+log4j-1.2.14.pom>maven=
+log4j-1.2.14.jar>maven=
+log4j-1.2.14.jar>smartbear-sweden-plugin-repository=
+log4j-1.2.14.pom>smartbear-sweden-plugin-repository=

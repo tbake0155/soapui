@@ -55,7 +55,8 @@ import com.eviware.soapui.support.scripting.SoapUIScriptEngineRegistry;
 import com.eviware.soapui.support.xml.XmlObjectConfigurationBuilder;
 import com.eviware.soapui.support.xml.XmlObjectConfigurationReader;
 import com.jgoodies.forms.builder.ButtonBarBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.xmlbeans.XmlObject;
 
 import javax.swing.AbstractAction;
@@ -225,7 +226,7 @@ public class GroovyScriptAssertion extends WsdlMessageAssertion implements Reque
             buildUI();
             setPreferredSize(new Dimension(600, 440));
 
-            logger = Logger.getLogger("ScriptAssertion." + getName());
+            logger = org.apache.logging.log4j.LogManager.getLogger("ScriptAssertion." + getName());
             editor.requestFocusInWindow();
         }
 
@@ -374,13 +375,14 @@ public class GroovyScriptAssertion extends WsdlMessageAssertion implements Reque
 
                 try {
                     Logger groovyLog = SoapUI.ensureGroovyLog();
-                    logger.addAppender(groovyLog.getAppender("GLOBAL_GROOVY_LOG"));
+                    ((org.apache.logging.log4j.core.Logger)logger).addAppender(new DefaultConfiguration()
+                            .getAppender("GLOBAL_GROOVY_LOG"));
                     try {
                         setScriptText(editor.getEditArea().getText());
                         String result = assertScript(exchange, new WsdlTestRunContext(testStep), logger);
                         UISupport.showInfoMessage("Script Assertion Passed" + ((result == null) ? "" : ": [" + result + "]"));
                     } finally {
-                        logger.removeAppender("GLOBAL_GROOVY_LOG");
+                        new DefaultConfiguration().removeAppender("GLOBAL_GROOVY_LOG");
                     }
                 } catch (AssertionException e) {
                     UISupport.showErrorMessage(e.getMessage());

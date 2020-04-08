@@ -16,7 +16,7 @@
 
 package com.eviware.soapui.support.log;
 
-import org.apache.log4j.Level;
+import org.apache.logging.log4j.Level;
 import org.mortbay.log.Logger;
 
 /**
@@ -26,7 +26,8 @@ import org.mortbay.log.Logger;
  */
 
 public class JettyLogger implements Logger {
-    org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger("jetty");
+    org.apache.logging.log4j.core.Logger log = (org.apache.logging.log4j.core.Logger)
+            org.apache.logging.log4j.LogManager.getLogger("jetty");
 
     public void debug(String arg0, Throwable arg1) {
         log.debug(arg0, arg1);

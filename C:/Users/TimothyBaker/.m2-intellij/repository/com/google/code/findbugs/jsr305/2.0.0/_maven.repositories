@@ -1,0 +1,6 @@
+#NOTE: This is an internal implementation file, its format can be changed without prior notice.
+#Thu Apr 02 15:17:56 EDT 2020
+jsr305-2.0.0.jar>maven=
+jsr305-2.0.0.pom>maven=
+jsr305-2.0.0.jar>smartbear-sweden-plugin-repository=
+jsr305-2.0.0.pom>smartbear-sweden-plugin-repository=

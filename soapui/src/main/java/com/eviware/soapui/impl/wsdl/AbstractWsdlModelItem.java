@@ -30,6 +30,7 @@ import com.eviware.soapui.support.UISupport;
 import com.eviware.soapui.support.resolver.ResolveContext;
 
 import javax.swing.ImageIcon;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -118,7 +119,7 @@ public abstract class AbstractWsdlModelItem<T extends ModelItemConfig>
         return config;
     }
 
-    public void setConfig(T config) {
+    public void setConfig(T config) throws URISyntaxException {
         this.config = config;
 
         if (config != null) {

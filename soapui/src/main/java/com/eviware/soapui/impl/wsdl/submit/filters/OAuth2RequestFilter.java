@@ -33,7 +33,7 @@ import com.eviware.soapui.model.propertyexpansion.PropertyExpander;
 import com.eviware.soapui.support.StringUtils;
 import com.eviware.soapui.support.TimeUtils;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import static com.eviware.soapui.config.CredentialsConfig.AuthType.O_AUTH_1_0;
 import static com.eviware.soapui.config.CredentialsConfig.AuthType.O_AUTH_2_0;
@@ -41,7 +41,7 @@ import static com.eviware.soapui.config.CredentialsConfig.AuthType.O_AUTH_2_0;
 public class OAuth2RequestFilter extends AbstractRequestFilter {
     private static final int ACCESS_TOKEN_RETRIEVAL_TIMEOUT = 5000;
     // intentionally left non-final to facilitate testing, but should not be modified in production!
-    private static Logger log = Logger.getLogger(OAuth2RequestFilter.class);
+    private static Logger log = org.apache.logging.log4j.LogManager.getLogger(OAuth2RequestFilter.class);
 
 
 	/* setLog() and getLog() should only be used for testing */

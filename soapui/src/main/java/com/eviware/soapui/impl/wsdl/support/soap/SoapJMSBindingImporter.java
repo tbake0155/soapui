@@ -22,7 +22,7 @@ import com.eviware.soapui.impl.wsdl.WsdlProject;
 import com.eviware.soapui.impl.wsdl.support.wsdl.WsdlContext;
 import com.eviware.soapui.impl.wsdl.support.wsdl.WsdlUtils;
 import com.eviware.soapui.settings.WsdlSettings;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import javax.wsdl.Binding;
 import javax.wsdl.BindingOperation;
@@ -38,7 +38,7 @@ import java.util.List;
  */
 
 public class SoapJMSBindingImporter extends AbstractSoapBindingImporter {
-    private final static Logger log = Logger.getLogger(SoapJMSBindingImporter.class);
+    private final static Logger log = org.apache.logging.log4j.LogManager.getLogger(SoapJMSBindingImporter.class);
 
     public boolean canImport(Binding binding) {
         List<?> list = binding.getExtensibilityElements();

@@ -34,7 +34,10 @@ import com.eviware.soapui.support.editor.inspectors.attachments.ContentTypeHandl
 import com.eviware.soapui.support.types.StringToStringsMap;
 import com.eviware.soapui.support.xml.XmlUtils;
 import org.apache.commons.collections.list.TreeList;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.xmlbeans.XmlException;
 
 import javax.servlet.ServletContext;
@@ -42,10 +45,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -58,11 +59,12 @@ import java.util.logging.Logger;
 public class MockAsWarServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    protected static Logger logger = Logger.getLogger(MockAsWarServlet.class.getName());
+    protected static Logger logger = (Logger)
+            org.apache.logging.log4j.LogManager.getLogger(MockAsWarServlet.class.getName());
     protected WsdlProject project;
     long maxResults;
     List<MockResult> results = new TreeList();
-    private List<LoggingEvent> events = new TreeList();
+    private List<LogEvent> events = new TreeList();
     boolean enableWebUI;
 
     public void init() throws ServletException {
@@ -162,7 +164,7 @@ public class MockAsWarServlet extends HttpServlet {
             maxResults = 1000;
         }
 
-        SoapUI.ensureGroovyLog().addAppender(new GroovyLogAppender());
+        ((org.apache.logging.log4j.core.Logger)SoapUI.ensureGroovyLog()).addAppender(new GroovyLogAppender());
 
         return getInitParameter("mockServiceEndpoint");
     }
@@ -220,7 +222,7 @@ public class MockAsWarServlet extends HttpServlet {
         private final ServletContext servletContext;
         private List<MockRunner> mockRunners = new ArrayList<MockRunner>();
 
-        public MockServletSoapUICore(ServletContext servletContext, String soapUISettings) {
+        public MockServletSoapUICore(ServletContext servletContext, String soapUISettings) throws URISyntaxException {
             super(servletContext.getRealPath("/"), servletContext.getRealPath(soapUISettings));
             this.servletContext = servletContext;
         }
@@ -313,7 +315,7 @@ public class MockAsWarServlet extends HttpServlet {
             }
         }
 
-        public MockServletSoapUICore(ServletContext servletContext) {
+        public MockServletSoapUICore(ServletContext servletContext) throws URISyntaxException {
             super(servletContext.getRealPath("/"), null);
             this.servletContext = servletContext;
         }
@@ -476,9 +478,14 @@ public class MockAsWarServlet extends HttpServlet {
         out.flush();
     }
 
-    private class GroovyLogAppender extends org.apache.log4j.AppenderSkeleton {
+    private class GroovyLogAppender extends org.apache.logging.log4j.core.appender.AbstractAppender {
 
-        protected void append(LoggingEvent event) {
+        protected GroovyLogAppender() {
+            super("groovyLogAppender", null, null, false, new Property[0]);
+        }
+
+        @Override
+        public void append(LogEvent event) {
             events.add(event);
         }
 
@@ -509,11 +516,11 @@ public class MockAsWarServlet extends HttpServlet {
 
         int cnt = 1;
 
-        for (LoggingEvent event : events) {
+        for (LogEvent event : events) {
 
             out.print("<tr><td>" + (cnt++) + "</td>");
-            out.print("<td>" + new java.util.Date(event.timeStamp) + "</td>");
-            out.print("<td>" + event.getRenderedMessage() + "</td></tr>");
+            out.print("<td>" + new java.util.Date(event.getNanoTime()) + "</td>");
+            out.print("<td>" + event.getMessage().getFormattedMessage() + "</td></tr>");
         }
 
         out.print("</table>");

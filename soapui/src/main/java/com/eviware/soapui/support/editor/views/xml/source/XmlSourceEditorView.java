@@ -87,6 +87,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,7 +135,7 @@ public class XmlSourceEditorView<T extends ModelItem> extends AbstractXmlEditorV
         this.readOnly = readOnly;
     }
 
-    protected void buildUI() {
+    protected void buildUI() throws URISyntaxException {
         editArea = new RSyntaxTextArea(20, 60);
 
         try {
@@ -583,7 +584,7 @@ public class XmlSourceEditorView<T extends ModelItem> extends AbstractXmlEditorV
         }
     }
 
-    public RSyntaxTextArea getInputArea() {
+    public RSyntaxTextArea getInputArea() throws URISyntaxException {
         getComponent();
         return editArea;
     }
@@ -621,7 +622,7 @@ public class XmlSourceEditorView<T extends ModelItem> extends AbstractXmlEditorV
         }
     }
 
-    public void setEditable(boolean enabled) {
+    public void setEditable(boolean enabled) throws URISyntaxException {
         getComponent();
         editArea.setEditable(enabled);
     }
@@ -681,7 +682,7 @@ public class XmlSourceEditorView<T extends ModelItem> extends AbstractXmlEditorV
         return true;
     }
 
-    public JComponent getComponent() {
+    public JComponent getComponent() throws URISyntaxException {
         if (splitter == null) {
             buildUI();
         }

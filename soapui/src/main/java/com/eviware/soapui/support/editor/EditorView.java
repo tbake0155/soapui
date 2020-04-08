@@ -19,6 +19,7 @@ package com.eviware.soapui.support.editor;
 import com.eviware.soapui.support.PropertyChangeNotifier;
 
 import javax.swing.JComponent;
+import java.net.URISyntaxException;
 
 /**
  * Views available for the XmlDocument of a XmlEditor
@@ -33,7 +34,7 @@ public interface EditorView<T extends EditorDocument> extends PropertyChangeNoti
 
     public String getTitle();
 
-    public JComponent getComponent();
+    public JComponent getComponent() throws URISyntaxException;
 
     public boolean deactivate();
 
@@ -53,7 +54,7 @@ public interface EditorView<T extends EditorDocument> extends PropertyChangeNoti
 
     public void release();
 
-    public void setEditable(boolean enabled);
+    public void setEditable(boolean enabled) throws URISyntaxException;
 
     public String getViewId();
 

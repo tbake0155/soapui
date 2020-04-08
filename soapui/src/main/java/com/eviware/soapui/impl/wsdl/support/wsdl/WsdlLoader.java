@@ -24,7 +24,7 @@ import com.eviware.soapui.settings.WsdlSettings;
 import com.eviware.soapui.support.StringUtils;
 import com.eviware.soapui.support.Tools;
 import com.eviware.soapui.support.xml.XmlUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
@@ -41,7 +41,7 @@ import java.net.URI;
  */
 
 public abstract class WsdlLoader extends AbstractDefinitionLoader implements WsdlDefinitionLoader {
-    protected static final Logger log = Logger.getLogger(WsdlLoader.class);
+    protected static final Logger log = org.apache.logging.log4j.LogManager.getLogger(WsdlLoader.class);
 
     private String url;
     private String firstNewURI;

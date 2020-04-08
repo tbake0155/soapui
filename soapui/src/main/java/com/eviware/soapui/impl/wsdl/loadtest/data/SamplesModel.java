@@ -26,7 +26,7 @@ import com.eviware.soapui.model.testsuite.TestCaseRunContext;
 import com.eviware.soapui.model.testsuite.TestCaseRunner;
 import com.eviware.soapui.model.testsuite.TestStep;
 import com.eviware.soapui.model.testsuite.TestStepResult;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.table.AbstractTableModel;
 import java.beans.PropertyChangeEvent;
@@ -47,7 +47,7 @@ public class SamplesModel extends AbstractTableModel {
     private InternalTestSuiteListener testSuiteListener;
     private InternalPropertyChangeListener propertyChangeListener;
     private TestCase testCase;
-    private final static Logger log = Logger.getLogger(SamplesModel.class);
+    private final static Logger log = org.apache.logging.log4j.LogManager.getLogger(SamplesModel.class);
 
     public SamplesModel(LoadTest loadTest) {
         this.loadTest = loadTest;

@@ -23,7 +23,7 @@ import com.eviware.soapui.support.action.SoapUIActionRegistry;
 import com.eviware.soapui.support.factory.SoapUIFactoryRegistry;
 import com.eviware.soapui.support.listener.ListenerRegistry;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 
@@ -41,7 +41,7 @@ import java.util.Set;
  */
 public class PluginLoader extends LoaderBase {
 
-    public static Logger log = Logger.getLogger(PluginLoader.class);
+    public static Logger log = org.apache.logging.log4j.LogManager.getLogger(PluginLoader.class);
 
     public PluginLoader(SoapUIFactoryRegistry factoryRegistry,
                         SoapUIActionRegistry actionRegistry, ListenerRegistry listenerRegistry) {

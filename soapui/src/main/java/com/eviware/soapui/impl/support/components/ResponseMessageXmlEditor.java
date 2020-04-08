@@ -29,6 +29,8 @@ import com.eviware.soapui.support.editor.xml.XmlDocument;
 import com.eviware.soapui.support.editor.xml.XmlEditorView;
 import com.eviware.soapui.support.editor.xml.XmlInspector;
 
+import java.net.URISyntaxException;
+
 /**
  * XmlEditor for a response-message to a WsdlRequest
  *
@@ -37,7 +39,7 @@ import com.eviware.soapui.support.editor.xml.XmlInspector;
 
 public class ResponseMessageXmlEditor<T extends ModelItem, T2 extends XmlDocument> extends ModelItemXmlEditor<T, T2> {
     @SuppressWarnings("unchecked")
-    public ResponseMessageXmlEditor(T2 xmlDocument, T modelItem) {
+    public ResponseMessageXmlEditor(T2 xmlDocument, T modelItem) throws URISyntaxException {
         super(xmlDocument, modelItem);
 
         EditorViewFactory[] editorFactories = EditorViewFactoryRegistry.getInstance().getFactoriesOfType(
@@ -64,7 +66,7 @@ public class ResponseMessageXmlEditor<T extends ModelItem, T2 extends XmlDocumen
     }
 
     @Override
-    public void addEditorView(EditorView<T2> editorView) {
+    public void addEditorView(EditorView<T2> editorView) throws URISyntaxException {
         super.addEditorView(editorView);
     }
 }

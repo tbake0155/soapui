@@ -36,36 +36,37 @@ import net.sf.json.JSONObject;
 import javax.annotation.Nonnull;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URISyntaxException;
 
 import static com.eviware.soapui.support.JsonUtil.seemsToBeJsonContentType;
 
 public abstract class AbstractHttpXmlRequestDesktopPanel<T extends ModelItem, T2 extends HttpRequestInterface<?>>
         extends AbstractHttpRequestDesktopPanel<T, T2> {
 
-    public AbstractHttpXmlRequestDesktopPanel(T modelItem, T2 requestItem) {
+    public AbstractHttpXmlRequestDesktopPanel(T modelItem, T2 requestItem) throws URISyntaxException {
         super(modelItem, requestItem);
     }
 
     @Override
-    protected ModelItemXmlEditor<?, ?> buildRequestEditor() {
+    protected ModelItemXmlEditor<?, ?> buildRequestEditor() throws URISyntaxException {
         return new HttpRequestMessageEditor(getRequest());
     }
 
     @Override
-    protected ModelItemXmlEditor<?, ?> buildResponseEditor() {
+    protected ModelItemXmlEditor<?, ?> buildResponseEditor() throws URISyntaxException {
         return new HttpResponseMessageEditor(getRequest());
     }
 
     public class HttpRequestMessageEditor extends
             AbstractHttpRequestDesktopPanel.AbstractHttpRequestMessageEditor {
-        public HttpRequestMessageEditor(HttpRequestInterface<?> modelItem) {
+        public HttpRequestMessageEditor(HttpRequestInterface<?> modelItem) throws URISyntaxException {
             super(new HttpRequestDocument(modelItem));
         }
     }
 
     public class HttpResponseMessageEditor extends
             AbstractHttpRequestDesktopPanel.AbstractHttpResponseMessageEditor {
-        public HttpResponseMessageEditor(HttpRequestInterface<?> modelItem) {
+        public HttpResponseMessageEditor(HttpRequestInterface<?> modelItem) throws URISyntaxException {
             super(new HttpResponseDocument(modelItem));
         }
     }

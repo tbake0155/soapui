@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,7 +40,8 @@ public class SoapUIMockServlet extends HttpServlet {
     private WsdlMockRunner mockRunner;
     private WsdlMockService mockService;
     private WsdlProject project;
-    private static Logger logger = Logger.getLogger(SoapUIMockServlet.class.getName());
+    private static Logger logger = (Logger)
+            org.apache.logging.log4j.LogManager.getLogger(SoapUIMockServlet.class.getName());
 
     @Override
     public void init() throws ServletException {
@@ -79,7 +81,7 @@ public class SoapUIMockServlet extends HttpServlet {
 
     // </editor-fold>
 
-    protected SoapUICore createSoapUICore(String settingsFile, String soapUISettingsPassword) {
+    protected SoapUICore createSoapUICore(String settingsFile, String soapUISettingsPassword) throws URISyntaxException {
         return new DefaultSoapUICore(null, settingsFile, soapUISettingsPassword);
     }
 }

@@ -20,7 +20,7 @@ import com.eviware.soapui.impl.wsdl.WsdlOperation;
 import com.eviware.soapui.impl.wsdl.support.wsdl.WsdlContext;
 import com.eviware.soapui.impl.wsdl.support.wsdl.WsdlUtils;
 import com.eviware.soapui.support.xml.XmlUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.apache.xmlbeans.SchemaGlobalElement;
 import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlException;
@@ -43,7 +43,7 @@ public class MessageXmlObject {
     private WsdlContext wsdlContext;
     private List<MessageXmlPart> messageParts = new ArrayList<MessageXmlPart>();
 
-    private final static Logger log = Logger.getLogger(MessageXmlObject.class);
+    private final static Logger log = org.apache.logging.log4j.LogManager.getLogger(MessageXmlObject.class);
     private final String messageContent;
     private WsdlOperation operation;
     private final boolean isRequest;

@@ -1,0 +1,6 @@
+#NOTE: This is an internal implementation file, its format can be changed without prior notice.
+#Thu Apr 02 15:17:10 EDT 2020
+extra-enforcer-rules-1.1.pom>maven=
+extra-enforcer-rules-1.1.jar>smartbear-sweden-plugin-repository=
+extra-enforcer-rules-1.1.jar>maven=
+extra-enforcer-rules-1.1.pom>smartbear-sweden-plugin-repository=

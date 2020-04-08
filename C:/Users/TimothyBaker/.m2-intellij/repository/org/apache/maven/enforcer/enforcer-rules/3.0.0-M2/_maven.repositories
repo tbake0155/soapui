@@ -1,0 +1,6 @@
+#NOTE: This is an internal implementation file, its format can be changed without prior notice.
+#Thu Apr 02 15:17:10 EDT 2020
+enforcer-rules-3.0.0-M2.pom>maven=
+enforcer-rules-3.0.0-M2.pom>smartbear-sweden-plugin-repository=
+enforcer-rules-3.0.0-M2.jar>maven=
+enforcer-rules-3.0.0-M2.jar>smartbear-sweden-plugin-repository=

@@ -16,7 +16,7 @@
 
 package com.eviware.soapui.tools;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  */
 public class PropertyExpansionRemover {
 
-    private static final Logger log = Logger.getLogger(PropertyExpansionRemover.class);
+    private static final Logger log = org.apache.logging.log4j.LogManager.getLogger(PropertyExpansionRemover.class);
 
     public static final String EXPANSION_START = "${";
 

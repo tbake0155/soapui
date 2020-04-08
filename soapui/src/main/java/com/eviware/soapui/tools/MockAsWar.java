@@ -27,7 +27,7 @@ import com.eviware.x.dialogs.XProgressMonitor;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
@@ -60,7 +60,7 @@ public class MockAsWar {
     private File warLibDir;
     protected File soapUIDir;
 
-    protected Logger log = Logger.getLogger(MockAsWar.class);
+    protected Logger log = org.apache.logging.log4j.LogManager.getLogger(MockAsWar.class);
 
     private boolean includeExt;
     protected boolean includeActions;

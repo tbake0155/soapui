@@ -33,6 +33,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +83,7 @@ public class Editor<T extends EditorDocument> extends JPanel implements Property
         }
     }
 
-    public void addEditorView(EditorView<T> editorView) {
+    public void addEditorView(EditorView<T> editorView) throws URISyntaxException {
         views.add(editorView);
 
         if (UISupport.isMac()) {
@@ -134,7 +135,11 @@ public class Editor<T extends EditorDocument> extends JPanel implements Property
 
     public void requestFocus() {
         if (currentView != null) {
-            currentView.getComponent().requestFocus();
+            try {
+                currentView.getComponent().requestFocus();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -143,7 +148,12 @@ public class Editor<T extends EditorDocument> extends JPanel implements Property
     }
 
     public boolean hasFocus() {
-        return currentView == null ? false : currentView.getComponent().hasFocus();
+        try {
+            return currentView != null && currentView.getComponent().hasFocus();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return currentView != null;
+        }
     }
 
     public final void setDocument(T document) {
@@ -165,10 +175,6 @@ public class Editor<T extends EditorDocument> extends JPanel implements Property
         return currentView;
     }
 
-    public final JTabbedPane getInputTabs() {
-        return inputTabs;
-    }
-
     public final List<EditorView<T>> getViews() {
         return views;
     }
@@ -187,7 +193,7 @@ public class Editor<T extends EditorDocument> extends JPanel implements Property
         return inspectorPanel.getInspector(inspectorId);
     }
 
-    public void setEditable(boolean enabled) {
+    public void setEditable(boolean enabled) throws URISyntaxException {
         for (EditorView<T> view : views) {
             view.setEditable(enabled);
         }
@@ -197,13 +203,12 @@ public class Editor<T extends EditorDocument> extends JPanel implements Property
         inspectorPanel.addInspector(inspector);
         inspector.init(this);
         inspectorPanel
-                .setInspectorVisible(inspector, currentView == null ? true : inspector.isEnabledFor(currentView));
+                .setInspectorVisible(inspector, currentView == null || inspector.isEnabledFor(currentView));
     }
 
     private final class InputTabsChangeListener implements ChangeListener {
         private int lastDividerLocation;
 
-        @SuppressWarnings("unchecked")
         public void stateChanged(ChangeEvent e) {
             int currentViewIndex = views.indexOf(currentView);
 
@@ -241,7 +246,11 @@ public class Editor<T extends EditorDocument> extends JPanel implements Property
 
                 public void run() {
                     if (currentView != null) {
-                        currentView.getComponent().requestFocus();
+                        try {
+                            currentView.getComponent().requestFocus();
+                        } catch (URISyntaxException ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 }
             });

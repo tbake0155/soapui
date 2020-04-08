@@ -35,7 +35,7 @@ import com.eviware.soapui.support.Tools;
 import com.eviware.soapui.support.editor.inspectors.attachments.ContentTypeHandler;
 import com.eviware.soapui.support.types.StringToStringMap;
 import com.eviware.soapui.support.xml.XmlUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.InputSource;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +59,7 @@ public class WsdlMockDispatcher extends AbstractMockDispatcher {
     private WsdlMockRunContext mockContext;
 
     private final Map<String, StringToStringMap> wsdlCache = new HashMap<String, StringToStringMap>();
-    private final static Logger log = Logger.getLogger(WsdlMockDispatcher.class);
+    private final static Logger log = org.apache.logging.log4j.LogManager.getLogger(WsdlMockDispatcher.class);
 
 
     public WsdlMockDispatcher(WsdlMockService mockService, WsdlMockRunContext mockContext) {

@@ -19,7 +19,7 @@ package com.eviware.soapui.impl.wsdl.support.wsdl;
 import com.eviware.soapui.impl.support.definition.support.InvalidDefinitionException;
 import com.eviware.soapui.impl.support.definition.support.XmlSchemaBasedInterfaceDefinition;
 import com.eviware.soapui.impl.wsdl.WsdlInterface;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
@@ -31,7 +31,7 @@ public class WsdlInterfaceDefinition extends XmlSchemaBasedInterfaceDefinition<W
 
     private static WSDLFactory factory;
     private static WSDLReader wsdlReader;
-    private Logger log = Logger.getLogger(WsdlInterfaceDefinition.class);
+    private Logger log = org.apache.logging.log4j.LogManager.getLogger(WsdlInterfaceDefinition.class);
 
     public WsdlInterfaceDefinition(WsdlInterface iface) {
         super(iface);

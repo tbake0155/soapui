@@ -31,7 +31,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.params.HttpParams;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import java.net.Authenticator;
 import java.net.InetAddress;
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  */
 
 public class ProxyUtils {
-    private final static Logger logger = Logger.getLogger(ProxyUtils.class);
+    private final static Logger logger = org.apache.logging.log4j.LogManager.getLogger(ProxyUtils.class);
 
     private static boolean proxyEnabled;
 

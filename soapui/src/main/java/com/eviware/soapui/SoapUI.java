@@ -129,8 +129,9 @@ import javafx.application.Platform;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.PosixParser;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -213,7 +214,7 @@ public class SoapUI {
     // ------------------------------ CONSTANTS ------------------------------
     public static final String DEFAULT_DESKTOP = "Default";
     public static final String CURRENT_SOAPUI_WORKSPACE = SoapUI.class.getName() + "@workspace";
-    public final static Logger log = Logger.getLogger(SoapUI.class);
+    public final static Logger log = LogManager.getLogger(SoapUI.class);
     public final static String SOAPUI_VERSION = getVersion(SoapUISystemProperties.VERSION);
     public final static String PRODUCT_NAME = "SoapUI";
     public static final String DEFAULT_WORKSPACE_FILE = "default-soapui-workspace.xml";
@@ -255,7 +256,7 @@ public class SoapUI {
     private static SoapUIDesktop desktop;
     private static Workspace workspace;
     private static Log4JMonitor logMonitor;
-    private static Logger errorLog = Logger.getLogger("soapui.errorlog");
+    private static Logger errorLog = LogManager.getLogger("soapui.errorlog");
     private static boolean isStandalone;
     private static boolean isCommandLine;
     private static TestMonitor testMonitor;
@@ -340,7 +341,7 @@ public class SoapUI {
         return !UISupport.isHeadless() && !isCommandLine();
     }
 
-    private void buildUI() {
+    private void buildUI() throws URISyntaxException {
         log.info("Used java version: " + System.getProperty("java.version"));
         frame.addWindowListener(new MainFrameWindowListener());
         UISupport.setMainFrame(frame);
@@ -720,11 +721,11 @@ public class SoapUI {
         overviewPanel.repaint();
     }
 
-    private JComponent buildContentPanel() {
+    private JComponent buildContentPanel() throws URISyntaxException {
         return buildLogPanel(true, "SoapUI log");
     }
 
-    private JComponent buildLogPanel(boolean hasDefault, String defaultName) {
+    private JComponent buildLogPanel(boolean hasDefault, String defaultName) throws URISyntaxException {
         InspectorLog4JMonitor inspectorLog4JMonitor = new InspectorLog4JMonitor(desktop.getDesktopComponent());
 
         JComponent monitor = initLogMonitor(hasDefault, defaultName, inspectorLog4JMonitor);
@@ -756,7 +757,7 @@ public class SoapUI {
         return logMonitor.getComponent();
     }
 
-    public static boolean isSelectingMostRecentlyUsedDesktopPanelOnClose() {
+    public static boolean isSelectingMostRecentlyUsedDesktopPanelOnClose() throws URISyntaxException {
         return getSettings().getBoolean(UISettings.MRU_PANEL_SELECTOR, true);
     }
 
@@ -789,8 +790,12 @@ public class SoapUI {
             boolean isDebug = java.lang.management.ManagementFactory.getRuntimeMXBean().
                     getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
             SoapUIUpdateProvider updateProvider = SoapUIAutoUpdaterUtils.getProvider();
-            if (!isDebug && SoapUI.getSettings().getBoolean(VersionUpdateSettings.AUTO_CHECK_VERSION_UPDATE)) {
-                updateProvider.start();
+            try {
+                if (!isDebug && SoapUI.getSettings().getBoolean(VersionUpdateSettings.AUTO_CHECK_VERSION_UPDATE)) {
+                    updateProvider.start();
+                }
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
 
             addStandardPreferencesShortcutOnMac();
@@ -1081,7 +1086,7 @@ public class SoapUI {
         return menuBar;
     }
 
-    private void show(Workspace workspace) {
+    private void show(Workspace workspace) throws URISyntaxException {
         SoapUI.workspace = workspace;
 
         String desktopType = soapUICore.getSettings().getString(UISettings.DESKTOP_TYPE, SoapUI.DEFAULT_DESKTOP);
@@ -1218,7 +1223,7 @@ public class SoapUI {
     public static Logger ensureGroovyLog() {
         synchronized (threadPool) {
             if (!checkedGroovyLogMonitor || launchedTestRunner) {
-                groovyLogger = Logger.getLogger("groovy.log");
+                groovyLogger = LogManager.getLogger("groovy.log");
 
                 Log4JMonitor logMonitor = getLogMonitor();
                 if (logMonitor != null && !logMonitor.hasLogArea("groovy.log")) {
@@ -1321,20 +1326,40 @@ public class SoapUI {
 
         public void actionPerformed(ActionEvent e) {
             if (ProxyUtils.isProxyEnabled()) {
-                SoapUI.getSettings().setBoolean(ProxySettings.ENABLE_PROXY, false);
+                try {
+                    SoapUI.getSettings().setBoolean(ProxySettings.ENABLE_PROXY, false);
+                } catch (URISyntaxException ex) {
+                    ex.printStackTrace();
+                }
                 Analytics.trackAction(TURN_OFF_PROXY_FROM_TOOLBAR);
             } else {
-                if (!ProxyUtils.isAutoProxy() && emptyManualSettings()) {
-                    SoapUI.getSettings().setBoolean(ProxySettings.AUTO_PROXY, true);
+                try {
+                    if (!ProxyUtils.isAutoProxy() && emptyManualSettings()) {
+                        try {
+                            SoapUI.getSettings().setBoolean(ProxySettings.AUTO_PROXY, true);
+                        } catch (URISyntaxException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                } catch (URISyntaxException ex) {
+                    ex.printStackTrace();
                 }
-                SoapUI.getSettings().setBoolean(ProxySettings.ENABLE_PROXY, true);
+                try {
+                    SoapUI.getSettings().setBoolean(ProxySettings.ENABLE_PROXY, true);
+                } catch (URISyntaxException ex) {
+                    ex.printStackTrace();
+                }
                 Analytics.trackAction(TURN_ON_PROXY_FROM_TOOLBAR);
             }
 
-            updateProxyFromSettings();
+            try {
+                updateProxyFromSettings();
+            } catch (URISyntaxException ex) {
+                ex.printStackTrace();
+            }
         }
 
-        private boolean emptyManualSettings() {
+        private boolean emptyManualSettings() throws URISyntaxException {
             return StringUtils.isNullOrEmpty(SoapUI.getSettings().getString(ProxySettings.HOST, ""))
                     || StringUtils.isNullOrEmpty(SoapUI.getSettings().getString(ProxySettings.PORT, ""));
         }
@@ -1678,7 +1703,7 @@ public class SoapUI {
         }
     }
 
-    public static SoapUIListenerRegistry getListenerRegistry() {
+    public static SoapUIListenerRegistry getListenerRegistry() throws URISyntaxException {
         if (soapUICore == null) {
             soapUICore = DefaultSoapUICore.createDefault();
         }
@@ -1686,7 +1711,7 @@ public class SoapUI {
         return soapUICore.getListenerRegistry();
     }
 
-    public static SoapUIFactoryRegistry getFactoryRegistry() {
+    public static SoapUIFactoryRegistry getFactoryRegistry() throws URISyntaxException {
         if (soapUICore == null) {
             soapUICore = DefaultSoapUICore.createDefault();
         }
@@ -1694,7 +1719,7 @@ public class SoapUI {
         return soapUICore.getFactoryRegistry();
     }
 
-    public static Settings getSettings() {
+    public static Settings getSettings() throws URISyntaxException {
         if (soapUICore == null) {
             soapUICore = DefaultSoapUICore.createDefault();
         }
@@ -1708,7 +1733,7 @@ public class SoapUI {
         }
     }
 
-    public static MockEngine getMockEngine() {
+    public static MockEngine getMockEngine() throws URISyntaxException {
         if (soapUICore == null) {
             soapUICore = DefaultSoapUICore.createDefault();
         }
@@ -1720,7 +1745,7 @@ public class SoapUI {
         return soapUICore == null ? null : soapUICore.saveSettings();
     }
 
-    public static void initDefaultCore() {
+    public static void initDefaultCore() throws URISyntaxException {
         if (soapUICore == null) {
             soapUICore = DefaultSoapUICore.createDefault();
         }
@@ -1759,7 +1784,7 @@ public class SoapUI {
         }
     }
 
-    public static void initAutoSaveTimer() {
+    public static void initAutoSaveTimer() throws URISyntaxException {
         Settings settings = SoapUI.getSettings();
         long interval = settings.getLong(UISettings.AUTO_SAVE_INTERVAL, 0);
 
@@ -1796,7 +1821,7 @@ public class SoapUI {
         }
     }
 
-    public static void initGCTimer() {
+    public static void initGCTimer() throws URISyntaxException {
         Settings settings = SoapUI.getSettings();
         long interval = settings.getLong(UISettings.GC_INTERVAL, 60);
 
@@ -1831,7 +1856,7 @@ public class SoapUI {
         SoapUI.launchedTestRunner = launchedTestRunner;
     }
 
-    public static void updateProxyFromSettings() {
+    public static void updateProxyFromSettings() throws URISyntaxException {
         ProxyUtils.setProxyEnabled(getSettings().getBoolean(ProxySettings.ENABLE_PROXY));
         ProxyUtils.setAutoProxy(getSettings().getBoolean(ProxySettings.AUTO_PROXY));
         ProxyUtils.setGlobalProxy(getSettings());
@@ -1850,7 +1875,7 @@ public class SoapUI {
         return soapUIRunner;
     }
 
-    public static boolean isAutoUpdateVersion() {
+    public static boolean isAutoUpdateVersion() throws URISyntaxException {
         return getSettings().getBoolean(VersionUpdateSettings.AUTO_CHECK_VERSION_UPDATE);
     }
 
